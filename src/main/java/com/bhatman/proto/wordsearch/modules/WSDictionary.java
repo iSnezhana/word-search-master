@@ -8,11 +8,14 @@ import javax.inject.Named;
 @Named
 public class WSDictionary {
 
-	Set<String> dictWord = new HashSet<String>();
+	private Set<String> dictionaryWords = new HashSet<String>();
 
 	public WSDictionary() {
-		super();
-		dictWord.add("James");
+		dictionaryWords.add("James");
+	}
+
+	public Set<String> getDictionaryWords() {
+		return dictionaryWords;
 	}
 
 }
