@@ -23,8 +23,9 @@ public class WordSearchApplication implements ApplicationRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordSearchApplication.class);
 	private static final String Big_FilePath = "big.txt";
+	private static final String Small_FilePath = "small.txt";
 	private static final int ThusandLines = 1000;
-	
+
 	@Inject
 	private WSFileReader wsFileReader;
 
@@ -33,7 +34,7 @@ public class WordSearchApplication implements ApplicationRunner {
 
 	@Inject
 	private WSAggregator wsAggregator;
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(WordSearchApplication.class, args);
 	}
@@ -41,13 +42,14 @@ public class WordSearchApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws IOException, URISyntaxException {
 		logger.info("Starting WordSearch Application ...");
-		
-		wsFileReader.readFileInParts(Big_FilePath, ThusandLines);
 
+		wsFileReader.readFileInParts(Small_FilePath, ThusandLines);
+		int partIndex = 0;
 		while (wsFileReader.hasParts()) {
-			WSPart wsPart = wsFileReader.getNextPart();
+			WSPart wsPart = wsFileReader.getNextPart(partIndex);
 			WSResults wsResults = wsMatcher.match(wsPart);
 			wsAggregator.addResults(wsResults);
+			partIndex++;
 		}
 
 		wsAggregator.printResults();

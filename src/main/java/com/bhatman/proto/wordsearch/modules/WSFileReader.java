@@ -25,19 +25,19 @@ public class WSFileReader {
 
 	public void readFileInParts(String inputFilePath, int partLineCount) throws IOException, URISyntaxException {
 		this.inputFilePath = inputFilePath;
-		File inputFile = new File(WSFileReader.class.getClassLoader().getResource(inputFilePath).toURI());
-		lineIterator = FileUtils.lineIterator(inputFile, "UTF-8");
 		this.partLineCount = partLineCount;
 		hasParts = true;
+		File inputFile = new File(WSFileReader.class.getClassLoader().getResource(inputFilePath).toURI());
+		lineIterator = FileUtils.lineIterator(inputFile, "UTF-8");
 		logger.info("Starting to read " + inputFilePath);
 	}
 
-	public WSPart getNextPart() throws IOException {
-		WSPart wsPart = new WSPart();
-		int i = 0;
+	public WSPart getNextPart(int partIndex) throws IOException {
+		WSPart wsPart = new WSPart(partIndex, partLineCount);
+		int i = 1;
 		try {
-			while (lineIterator.hasNext() && i < partLineCount) {
-				wsPart.addLine(lineIterator.nextLine());
+			while (lineIterator.hasNext() && i <= partLineCount) {
+				wsPart.addLine(lineIterator.nextLine(), i);
 				i++;
 			}
 			logger.info("Read " + i + " lines from " + inputFilePath);
@@ -45,11 +45,9 @@ public class WSFileReader {
 			if (!lineIterator.hasNext()) {
 				hasParts = false;
 				logger.info("Completed reading " + inputFilePath);
+				lineIterator.close();
 			}
 		} finally {
-			if (!hasParts) {
-				LineIterator.closeQuietly(lineIterator);
-			}
 		}
 
 		return wsPart;
