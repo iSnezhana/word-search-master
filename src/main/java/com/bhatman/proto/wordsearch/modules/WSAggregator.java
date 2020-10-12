@@ -10,7 +10,7 @@ import javax.inject.Named;
 public class WSAggregator {
 	private Map<String, List<String>> results = new TreeMap<String, List<String>>();
 
-	public void addResults(WSResults wsResults) {
+	public void recordResultsForPart(WSResults wsResults) {
 		Map<String, List<String>> partResults = wsResults.getResults();
 		partResults.forEach((word, result) -> {
 			if (results.containsKey(word)) {
@@ -25,7 +25,6 @@ public class WSAggregator {
 	public void printResults() {
 		results.forEach((word, result) -> {
 			result.forEach(resultLine -> {
-				// Timothy --> resultLine
 				System.out.println(word + "--> " + resultLine);
 			});
 		});

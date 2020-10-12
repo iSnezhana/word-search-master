@@ -40,7 +40,7 @@ public class WSFileReader {
 				wsPart.addLine(lineIterator.nextLine(), i);
 				i++;
 			}
-			logger.info("Read " + i + " lines from " + inputFilePath);
+			logger.debug("Read " + i + " lines from " + inputFilePath);
 
 			if (!lineIterator.hasNext()) {
 				hasParts = false;

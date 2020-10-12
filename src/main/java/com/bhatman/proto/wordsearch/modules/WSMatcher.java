@@ -1,5 +1,6 @@
 package com.bhatman.proto.wordsearch.modules;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,20 +20,34 @@ public class WSMatcher {
 		dictionaryWords = dictionary.getDictionaryWords();
 	}
 
-	public WSResults match(WSPart wsPart) {
+	public WSResults getResultForPart(WSPart wsPart) {
 		WSResults results = new WSResults();
-		List<WSLineDetails> lines = wsPart.getLines();
 
-		lines.forEach(line -> {
+		wsPart.getLines().forEach(line -> {
 			dictionaryWords.forEach(word -> {
-				int charOffset = line.getLine().indexOf(word);
-				if (-1 != charOffset) {
-					results.recordResult(word, line.getLineIndex(), charOffset + 1);
+				List<String> matches = getMatchesByLineAndWord(line, word);
+				if (!matches.isEmpty()) {
+					results.recordResult(word, matches);
 				}
 			});
 		});
 
 		return results;
+	}
+
+	private List<String> getMatchesByLineAndWord(WSLineDetails line, String word) {
+		int charOffset = 0;
+		int wordLength = 0;
+		List<String> matches = new ArrayList<>();
+		while (charOffset != -1) {
+			charOffset = line.getLine().indexOf(word, charOffset + wordLength);
+			if (charOffset != -1) {
+				matches.add("[lineOffset=" + line.getLineIndex() + ", charOffset=" + (charOffset + 1) + "]");
+			}
+			wordLength = word.length();
+		}
+		
+		return matches;
 	}
 
 }

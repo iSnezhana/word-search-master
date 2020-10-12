@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.inject.Named;
-
-@Named
 public class WSResults {
 
 	private Map<String, List<String>> results = new TreeMap<String, List<String>>();
@@ -16,14 +13,11 @@ public class WSResults {
 		return results;
 	}
 
-	public void recordResult(String word, int lineOffset, int charOffset) {
-		// [[lineOffset=13000, charOffset=19775], [lineOffset=13000, charOffset=42023]]
-		String resultEntry = "[lineOffset=" + lineOffset + ", charOffset=" + charOffset + "]";
-
+	public void recordResult(String word, List<String> matches) {
 		if (!results.containsKey(word)) {
 			results.put(word, new ArrayList<>());
 		}
-
-		results.get(word).add(resultEntry);
+		results.get(word).add("[" + String.join(",", matches) + "]");
 	}
+
 }

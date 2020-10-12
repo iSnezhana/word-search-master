@@ -1,8 +1,8 @@
 package com.bhatman.proto.wordsearch.model;
 
 public class WSLineDetails {
-	String line;
-	int lineIndex;
+	private String line;
+	private int lineIndex;
 
 	public WSLineDetails(String line, int lineIndex) {
 		this.line = line;

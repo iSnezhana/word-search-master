@@ -2,6 +2,8 @@ package com.bhatman.proto.wordsearch;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 
 import javax.inject.Inject;
 
@@ -16,15 +18,15 @@ import com.bhatman.proto.wordsearch.model.WSPart;
 import com.bhatman.proto.wordsearch.modules.WSAggregator;
 import com.bhatman.proto.wordsearch.modules.WSFileReader;
 import com.bhatman.proto.wordsearch.modules.WSMatcher;
-import com.bhatman.proto.wordsearch.modules.WSResults;
 
 @SpringBootApplication
 public class WordSearchApplication implements ApplicationRunner {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordSearchApplication.class);
-	private static final String Big_FilePath = "big.txt";
-	//private static final String Small_FilePath = "small.txt";
+	private static final String FilePath = "big.txt";
+	//private static final String FilePath = "small.txt";
 	private static final int ThusandLines = 1000;
+	private static Instant start;
 
 	@Inject
 	private WSFileReader wsFileReader;
@@ -36,6 +38,7 @@ public class WordSearchApplication implements ApplicationRunner {
 	private WSAggregator wsAggregator;
 
 	public static void main(String[] args) {
+		start = Instant.now();
 		SpringApplication.run(WordSearchApplication.class, args);
 	}
 
@@ -43,18 +46,18 @@ public class WordSearchApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws IOException, URISyntaxException {
 		logger.info("Starting WordSearch Application ...");
 
-		wsFileReader.readFileInParts(Big_FilePath, ThusandLines);
+		wsFileReader.readFileInParts(FilePath, ThusandLines);
 		int partIndex = 0;
 		while (wsFileReader.hasParts()) {
 			WSPart wsPart = wsFileReader.getNextPart(partIndex);
-			WSResults wsResults = wsMatcher.match(wsPart);
-			wsAggregator.addResults(wsResults);
+			wsAggregator.recordResultsForPart(wsMatcher.getResultForPart(wsPart));
 			partIndex++;
 		}
 
 		wsAggregator.printResults();
+		long timeElapsed = Duration.between(start, Instant.now()).toMillis();
 
-		logger.info("Shuting down WordSearch Application!");
+		logger.info("WordSearch Application took " + timeElapsed + " milliseconds to complete!");
 	}
 
 }
