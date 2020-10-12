@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.bhatman.proto</groupId>
 	<artifactId>word-search</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>word-search</name>
 	<description>Search word from a dictionary</description>
 

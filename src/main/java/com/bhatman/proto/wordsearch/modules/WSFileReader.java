@@ -1,12 +1,13 @@
 package com.bhatman.proto.wordsearch.modules;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 
 import javax.inject.Named;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ public class WSFileReader {
 		this.inputFilePath = inputFilePath;
 		this.partLineCount = partLineCount;
 		hasParts = true;
-		File inputFile = new File(WSFileReader.class.getClassLoader().getResource(inputFilePath).toURI());
-		lineIterator = FileUtils.lineIterator(inputFile, "UTF-8");
+		InputStream in = WSFileReader.class.getClassLoader().getResourceAsStream(inputFilePath);
+		lineIterator = IOUtils.lineIterator(in, Charset.forName("utf-8"));
 		logger.info("Starting to read " + inputFilePath);
 	}
 
